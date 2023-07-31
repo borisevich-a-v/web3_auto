@@ -2,7 +2,7 @@ import random
 
 from web3 import Web3
 
-from src.configs_and_other import ARB, ERA, Tokens
+from src.configs_and_other import ERA, Tokens
 
 
 class SyncSwapConfig:
@@ -22,7 +22,7 @@ class SyncswapSwap:
 
         self.classic_pool_factory_address = ...
         self.router_address = ...
-        self.web3 = Web3(Web3.HTTPProvider(ARB.rpc))
+        self.web3 = Web3(Web3.HTTPProvider(ERA.rpc))
         self.account = self.web3.eth.account.from_key(private_key)
         self.address_wallet = self.account.address
 
@@ -30,4 +30,20 @@ class SyncswapSwap:
         ...
 
     def get_balance(self, token: Tokens) -> float:
-        return self.web3.eth.get_balance(self.address_wallet) / 10**18
+        balance = self.web3.eth.get_balance(self.address_wallet)
+        return balance
+
+    def send_eth(self, private_key):
+        txn = {
+            "nonce": self.web3.eth.get_transaction_count(self.address_wallet),
+            "from": self.address_wallet,
+            "to": self.address_wallet,
+            "value": self.web3.to_wei(0.0005, "ether"),
+            "gas": 2_000_000,
+            "gasPrice": self.web3.eth.gas_price,
+            "chainId": ERA.chain_id,
+        }
+        signed_txn = self.web3.eth.account.sign_transaction(txn, private_key)
+        print("sending tx...")
+        txn_response = self.web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        return txn_response
