@@ -1,4 +1,5 @@
 # Python 3.11
-web3==6.7.0  # let's fix version of it
+web3==6.7.0  # let's fix version
+eth-abi==4.1.0
 pydantic==2.1.1
 pydantic-settings==2.0.2
