@@ -1,0 +1,6 @@
+class NoPoolError(Exception):
+    ...
+
+
+class NotEnoughBalanceError(Exception):
+    ...
