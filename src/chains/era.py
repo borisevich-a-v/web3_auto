@@ -1,6 +1,6 @@
 from enum import StrEnum
 
-from .chain import NATIVE_ETH_ADDRESS, Chain, get_abi
+from .common import NATIVE_ETH_ADDRESS, Chain, get_abi
 
 
 class Tokens(StrEnum):
@@ -9,6 +9,8 @@ class Tokens(StrEnum):
     USDC = "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4"
     USDT = "0x493257fd37edb34451f62edf8d2a0c418852ba4c"
     WBTC = "0xbbeb516fb02a01611cbbe0453fe3c580d7281011"
+    ZAT = "0x47ef4a5641992a72cfd57b9406c9d9cefee8e0c4"
+    ZZ = "0x1ab721f531cab4c87d536be8b985eafce17f0184"  # ZigZag
 
 
 chain = Chain(
