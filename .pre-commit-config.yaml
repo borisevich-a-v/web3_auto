@@ -32,3 +32,19 @@ repos:
         args:
           - --errors-only
           - --disable=import-error
+          -
+#  - repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: v1.5.0
+#    hooks:
+#      - id: mypy
+#        additional_dependencies: [ types-requests, pydantic ]
+#        name: mypy
+#        entry: mypy
+#        language: python
+#        types: [ python ]
+#        require_serial: true
+#        args:
+#          - --strict
+#          - --ignore-missing-imports
+#          - --allow-untyped-decorators
+#          - --python-version=3.11
