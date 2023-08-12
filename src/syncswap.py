@@ -9,6 +9,7 @@ from web3.types import SignedTx
 
 from .chains import era
 from .errors import NoPoolError, NotEnoughBalanceError
+from .utils.random_func import delay_after_approve
 
 
 class SyncswapSwap:
@@ -73,7 +74,8 @@ class SyncswapSwap:
             tx_receipt = self.web3.eth.get_transaction_receipt(raw_tx_hash)
         tx_hash = self.web3.to_hex(raw_tx_hash)
         print(f"Token approved | Tx hash: {tx_hash}")
-        time.sleep(5)
+
+        delay_after_approve()
 
     def _send_transaction(self, paths: list[dict[str, Any]]) -> str:
         signed_tx = self._get_signed_tx(paths, self.amount_to_swap)
