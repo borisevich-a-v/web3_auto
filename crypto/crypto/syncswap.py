@@ -7,22 +7,26 @@ from eth_abi import encode
 from web3 import Web3
 from web3.types import SignedTx
 
-from .chains import era
-from .errors import NoPoolError, NotEnoughBalanceError
-from .utils.random_func import delay_after_approve
+from crypto.configs import RandomConfig
+from crypto.crypto.chains import era
+from crypto.crypto.swap_factory import Swap
+from crypto.errors import NoPoolError, NotEnoughBalanceError
 
 
-class SyncswapSwap:
+class SyncswapSwap(Swap):
     CLASSIC_POOL_FACTORY_ADDRESS = "0xf2DAd89f2788a8CD54625C60b55cD3d2D0ACa7Cb"
     ROUTER_ADDRESS = "0x2da10A1e27bF85cEdD8FFb1AbBe97e53391C0295"
 
-    def __init__(self, private_key: str, from_token: era.Tokens, to_token: era.Tokens, amount_to_swap: float) -> None:
+    def __init__(
+        self, private_key: str, from_token: era.Tokens, to_token: era.Tokens, amount_to_swap: float, rnd: RandomConfig
+    ) -> None:
         self.from_token = from_token
         self.from_token_adr = Web3.to_checksum_address(self.from_token.value)
         self.to_token = to_token
         self.to_token_adr = Web3.to_checksum_address(self.to_token.value)
         self.amount_to_swap = int(amount_to_swap)
 
+        self.rnd = rnd
         self.web3 = Web3(Web3.HTTPProvider(era.chain.rpc))
         self.account = self.web3.eth.account.from_key(private_key)
 
@@ -74,8 +78,7 @@ class SyncswapSwap:
             tx_receipt = self.web3.eth.get_transaction_receipt(raw_tx_hash)
         tx_hash = self.web3.to_hex(raw_tx_hash)
         print(f"Token approved | Tx hash: {tx_hash}")
-
-        delay_after_approve()
+        self.rnd.delay_after_approve()
 
     def _send_transaction(self, paths: list[dict[str, Any]]) -> str:
         signed_tx = self._get_signed_tx(paths, self.amount_to_swap)
