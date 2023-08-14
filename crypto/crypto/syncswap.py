@@ -4,13 +4,14 @@ import traceback
 from typing import Any
 
 from eth_abi import encode
+from eth_typing import HexStr
 from web3 import Web3
 from web3.types import SignedTx
 
-from crypto.configs import RandomConfig
-from crypto.crypto.chains import era
-from crypto.crypto.swap_factory import Swap
-from crypto.errors import NoPoolError, NotEnoughBalanceError
+from configs import RandomConfig
+from crypto.chains import era
+from crypto.swaps import Swap
+from errors import NoPoolError, NotEnoughBalanceError
 
 
 class SyncswapSwap(Swap):
@@ -30,7 +31,7 @@ class SyncswapSwap(Swap):
         self.web3 = Web3(Web3.HTTPProvider(era.chain.rpc))
         self.account = self.web3.eth.account.from_key(private_key)
 
-    def swap(self) -> None:
+    def swap(self) -> HexStr:
         self._validate_amount_to_swap()
         paths = self._get_paths(self.amount_to_swap)
 
@@ -40,7 +41,7 @@ class SyncswapSwap(Swap):
             except Exception:
                 traceback.print_exc()
         tx_hash = self._send_transaction(paths)
-        print(tx_hash)
+        return tx_hash
 
     def approve_token(self, amount: float) -> None:  # TODO refactoring
         amount_to_approve = amount or self.amount_to_swap
@@ -80,11 +81,11 @@ class SyncswapSwap(Swap):
         print(f"Token approved | Tx hash: {tx_hash}")
         self.rnd.delay_after_approve()
 
-    def _send_transaction(self, paths: list[dict[str, Any]]) -> str:
+    def _send_transaction(self, paths: list[dict[str, Any]]) -> HexStr:
         signed_tx = self._get_signed_tx(paths, self.amount_to_swap)
         raw_tx_hash = self.web3.eth.send_raw_transaction(signed_tx.rawTransaction)
         tx_hash = self.web3.to_hex(raw_tx_hash)
-        return str(tx_hash)
+        return tx_hash
 
     def _get_signed_tx(self, paths: list[dict[str, Any]], value: float) -> SignedTx:
         router = self.web3.eth.contract(
@@ -145,7 +146,7 @@ class SyncswapSwap(Swap):
     def get_balance(self, token: era.Tokens) -> float:
         if token is era.Tokens.ETH:
             return float(self.web3.eth.get_balance(self.account.address))
-        if token in (era.Tokens.USDC,):
+        if token in (era.Tokens.USDC, era.Tokens.USDT, era.Tokens.ZAT, era.Tokens.ZZ):
             token_adr = Web3.to_checksum_address(token.value)
             contract = self.web3.eth.contract(address=token_adr, abi=era.ABI.ERC20)
             balance = contract.functions.balanceOf(self.account.address).call()

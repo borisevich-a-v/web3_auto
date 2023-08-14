@@ -1,21 +1,17 @@
 import random
 import time
-from enum import Enum
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
-
-from crypto.crypto.swap_factory import SwapFactory
-from crypto.crypto.syncswap_factory import SyncswapFactory
 
 
 class Settings(BaseSettings):
     private_key: str
 
-    dynamo_db_login: str
-    dynamo_db_password: str
-
-    worker_queue_name: str
+    # dynamo_db_login: str
+    # dynamo_db_password: str
+    #
+    # worker_queue_name: str
 
 
 class RandomConfig(BaseModel):
@@ -36,5 +32,4 @@ class RandomConfig(BaseModel):
         time.sleep(time_to_sleep)
 
 
-class Activities(Enum):
-    SYNCSWAP: SwapFactory = SyncswapFactory
+settings = Settings(_env_file=".env", _env_file_encoding="utf-8")
