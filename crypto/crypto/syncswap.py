@@ -32,14 +32,16 @@ class SyncswapSwap(Swap):
         self.account = self.web3.eth.account.from_key(private_key)
 
     def swap(self) -> HexStr:
+        print(f"Swapping {self.from_token} to {self.to_token}")
         self._validate_amount_to_swap()
         paths = self._get_paths(self.amount_to_swap)
-
+        print("Paths was found")
         if self.from_token is not era.Tokens.ETH:
             try:
                 self.approve_token(self.amount_to_swap)
             except Exception:
                 traceback.print_exc()
+            print("Required amount approved")
         tx_hash = self._send_transaction(paths)
         return tx_hash
 
@@ -115,6 +117,7 @@ class SyncswapSwap(Swap):
                 f"Current balance={balance} of wallet {self.account.address} "
                 f"is less then required amount to swap={self.amount_to_swap}"
             )
+        print("Enough balance for swap")
 
     def _get_paths(self, value: float) -> list[dict[str, Any]]:
         pool_address = self._get_pool_address()
@@ -146,7 +149,7 @@ class SyncswapSwap(Swap):
     def get_balance(self, token: era.Tokens) -> float:
         if token is era.Tokens.ETH:
             return float(self.web3.eth.get_balance(self.account.address))
-        if token in (era.Tokens.USDC, era.Tokens.USDT, era.Tokens.ZAT, era.Tokens.ZZ):
+        if token in (era.Tokens.USDC, era.Tokens.USDT, era.Tokens.ZAT, era.Tokens.ZZ, era.Tokens.WBTC):
             token_adr = Web3.to_checksum_address(token.value)
             contract = self.web3.eth.contract(address=token_adr, abi=era.ABI.ERC20)
             balance = contract.functions.balanceOf(self.account.address).call()

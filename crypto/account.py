@@ -21,6 +21,7 @@ class Account:
             from_=era.Tokens.ZZ,
             to_=era.Tokens.USDC,
         )
+        print(f"Next transaction is {tx}")
         return tx
 
     def get_private_key_for_acc(self) -> str:
@@ -39,7 +40,10 @@ class Account:
         self.save_tx(tx)
 
     def save_tx(self, tx):
-        print(tx)
+        print("Tx was performed", tx)
 
     def convert_usd_to_token(self, usd_amount, token) -> int:
         return usd_amount * 8.11 * 10**18
+
+    def __repr__(self):
+        return f"Account(public_key={self.public_key})"

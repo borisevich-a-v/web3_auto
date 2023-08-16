@@ -25,9 +25,8 @@ class Runner:
         ...
 
     def run(self):
-        while True:
-            for account in self._get_accounts_to_be_run():
-                account._perform_activity()
-                self.set_next_transaction_date()
-
-            self.rnd.sleep_between_runs()
+        self.rnd.sleep_between_runs()
+        for account in self._get_accounts_to_be_run():
+            print(f"Making tx for {account}")
+            account._perform_activity()
+            self.set_next_transaction_date()
