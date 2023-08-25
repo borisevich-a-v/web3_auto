@@ -8,6 +8,10 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     private_key: str
 
+    aws_access_key: str
+    aws_secret_key: str
+    aws_region: str
+
     # dynamo_db_login: str
     # dynamo_db_password: str
     #
