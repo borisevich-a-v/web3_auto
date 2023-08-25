@@ -12,18 +12,14 @@ class Settings(BaseSettings):
     aws_secret_key: str
     aws_region: str
 
-    # dynamo_db_login: str
-    # dynamo_db_password: str
-    #
-    # worker_queue_name: str
-
 
 class RandomConfig(BaseModel):
     _delay_after_approve_from = 1
     _delay_after_approve_upto = 30
 
     _delay_between_runs_from = 1
-    _delay_between_runs_upto = 2 # 15 * 60
+    _delay_between_runs_upto = 2  # 15 * 60
+
 
     def delay_after_approve(self) -> None:
         time_to_sleep = 1 + random.betavariate(alpha=2, beta=5) * (
