@@ -8,11 +8,9 @@ from configs import RandomConfig
 class Runner:
     def __init__(
         self,
-        db,
-        queue,
+        account_repository,
     ) -> None:
-        self._db = db
-        self.queue = queue
+        self._account_repository = account_repository
         self.rnd = RandomConfig()
         self.activities = Activities
 

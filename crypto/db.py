@@ -20,9 +20,3 @@ class Tx(BaseModel):
     amount_in_usd: float
     from_: Enum
     to_: Enum  # "nft" if it is nft
-
-
-class AccountDB(BaseModel):
-    id_: str
-    public_key: str
-    next_transaction_datetime: datetime
