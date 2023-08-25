@@ -20,6 +20,7 @@ class RandomConfig(BaseModel):
     _delay_between_runs_from = 1
     _delay_between_runs_upto = 2  # 15 * 60
 
+
     def delay_after_approve(self) -> None:
         time_to_sleep = 1 + random.betavariate(alpha=2, beta=5) * (
             self._delay_after_approve_from / self._delay_after_approve_upto
