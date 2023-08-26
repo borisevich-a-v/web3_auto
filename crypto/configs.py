@@ -3,15 +3,18 @@ import time
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
+
 from utils.random_values import get_random_value_with_2_5_betavariate
 
 
 class Settings(BaseSettings):
     private_key: str
+    public_key: str
 
     aws_access_key: str
     aws_secret_key: str
     aws_region: str
+    aws_endpoint_url: str
 
 
 class RandomConfig(BaseModel):

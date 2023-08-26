@@ -4,14 +4,14 @@ services:
   crypto:
     build: .
     ports:
-      - '50051:50051'
+      - '8080:8080'
 
   dynamodb-local:
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
     image: "amazon/dynamodb-local:latest"
     container_name: dynamodb-local
     ports:
-      - "50052:8000"
+      - "8000:8000"
     volumes:
-      - "./data/dynamodb:/home/dynamodblocal/data"
+      - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
