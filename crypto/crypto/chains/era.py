@@ -1,9 +1,9 @@
-from enum import StrEnum
+from enum import Enum
 
 from .common import NATIVE_ETH_ADDRESS, Chain, get_abi
 
 
-class Tokens(StrEnum):
+class Tokens(Enum):
     NATIVE = NATIVE_ETH_ADDRESS
     ETH = "0x5aea5775959fbc2557cc8789bc1bf90a239d9a91"
     USDC = "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4"
@@ -18,6 +18,7 @@ chain = Chain(
     rpc="https://zksync-era.blockpi.network/v1/rpc/public",
     scan="https://explorer.zksync.io/tx",
     code=9014,
+    name="era",
 )
 
 

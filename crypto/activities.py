@@ -1,6 +1,6 @@
 from enum import Enum
 
-from db import Applications
+from applications import Applications
 
 from crypto.swaps import Swap
 from crypto.syncswap import SyncswapSwap
