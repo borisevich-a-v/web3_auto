@@ -54,3 +54,4 @@ class AccountRepository(IAccountRepository):
         self.table.put_item(
             Item={"public_key": account_db.public_key, "next_tx_date": account_db.next_tx_date.isoformat()}
         )
+        return account_db

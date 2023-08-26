@@ -3,6 +3,7 @@ import time
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
+from utils.random_values import get_random_value_with_2_5_betavariate
 
 
 class Settings(BaseSettings):
@@ -14,16 +15,24 @@ class Settings(BaseSettings):
 
 
 class RandomConfig(BaseModel):
-    _delay_after_approve_from = 1
+    _delay_after_approve_from = 0.5
     _delay_after_approve_upto = 30
 
     _delay_between_runs_from = 1
     _delay_between_runs_upto = 2  # 15 * 60
 
+    _delay_between_accounts_from = 1
+    _delay_between_accounts_up_to = 2  # 5 * 60
 
-    def delay_after_approve(self) -> None:
-        time_to_sleep = 1 + random.betavariate(alpha=2, beta=5) * (
-            self._delay_after_approve_from / self._delay_after_approve_upto
+    def sleep_after_approve(self) -> None:
+        time_to_sleep = get_random_value_with_2_5_betavariate(
+            self._delay_after_approve_from, self._delay_after_approve_upto
+        )
+        time.sleep(time_to_sleep)
+
+    def sleep_between_accounts(self) -> None:
+        time_to_sleep = get_random_value_with_2_5_betavariate(
+            self._delay_between_accounts_from, self._delay_between_accounts_up_to
         )
         time.sleep(time_to_sleep)
 

@@ -27,7 +27,7 @@ class Account:
     def get_private_key_for_acc(self) -> str:
         return settings.private_key
 
-    def _perform_activity(self) -> None:
+    def perform_activity(self) -> None:
         tx = self._calculate_next_transaction()
         swap_class = app_to_activities_map[tx.application]
         swap_class(

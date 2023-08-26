@@ -3,15 +3,15 @@ import time
 import traceback
 from typing import Any
 
+from configs import RandomConfig
+from errors import NoPoolError, NotEnoughBalanceError
 from eth_abi import encode
 from eth_typing import HexStr
 from web3 import Web3
 from web3.types import SignedTx
 
-from configs import RandomConfig
 from crypto.chains import era
 from crypto.swaps import Swap
-from errors import NoPoolError, NotEnoughBalanceError
 
 
 class SyncswapSwap(Swap):
@@ -81,7 +81,7 @@ class SyncswapSwap(Swap):
             tx_receipt = self.web3.eth.get_transaction_receipt(raw_tx_hash)
         tx_hash = self.web3.to_hex(raw_tx_hash)
         print(f"Token approved | Tx hash: {tx_hash}")
-        self.rnd.delay_after_approve()
+        self.rnd.sleep_after_approve()
 
     def _send_transaction(self, paths: list[dict[str, Any]]) -> HexStr:
         signed_tx = self._get_signed_tx(paths, self.amount_to_swap)

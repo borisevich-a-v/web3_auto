@@ -1,6 +1,7 @@
 import boto3
 from configs import settings
 from repositories.account import AccountRepository
+from repositories.transactions import TxRepository
 from runner import Runner
 
 dynamodb = boto3.resource(
@@ -10,6 +11,7 @@ dynamodb = boto3.resource(
     aws_secret_access_key=settings.aws_secret_key,
 )
 account_repository = AccountRepository(dynamodb)
+tx_repository = TxRepository(dynamodb)
 
-runner = Runner(account_repository=account_repository)
+runner = Runner(account_repository=account_repository, tx_repository=tx_repository)
 runner.run()

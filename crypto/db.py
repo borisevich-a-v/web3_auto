@@ -11,9 +11,9 @@ class Applications(Enum):  # The same as activities?
 
 
 class Tx(BaseModel):
-    id_: str
     account_id: str
     hash: Optional[HexStr] = None
+    chain: str
     datetime_of_perform: Optional[datetime] = None  # todo rename
     contract_address: Optional[HexStr] = None
     application: Applications
