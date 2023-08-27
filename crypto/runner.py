@@ -1,4 +1,3 @@
-import datetime
 from typing import List
 
 from activities import Activities
@@ -17,11 +16,13 @@ class Runner:
         self,
         account_repository: IAccountRepository,
         tx_repository: ITxRepository,
+        secret_manager: ...,
         random_config: RandomConfig,
         activities: Activities,
     ) -> None:
         self._account_repository = account_repository
         self._tx_repository = tx_repository
+        self._secret_manager = secret_manager
         self.rnd = random_config
         self.activities = activities
 
@@ -32,12 +33,12 @@ class Runner:
 
     def set_next_transaction_date(self, account_public_key: HexStr) -> None:
         next_tx_datetime = get_random_datetime_in_future(days_from=5, days_up_to=10, hours_up_to=1)
-        self._account_repository.update_tx_date(account_public_key, datetime.datetime.now())
+        self._account_repository.update_tx_date(account_public_key, next_tx_datetime)
 
     def run(self):
         for account in self._get_accounts_to_be_run():
             print(f"Making tx for {account}")
-            executor = Executor(account.public_key, self.rnd, self._tx_repository)
+            executor = Executor(account.public_key, self.rnd, self._tx_repository, self._secret_manager)
             executor.perform_activity()
 
             self.set_next_transaction_date(account.public_key)

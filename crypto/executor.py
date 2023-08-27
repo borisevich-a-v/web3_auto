@@ -11,16 +11,16 @@ from crypto.chains import era
 from crypto.chains.era import Tokens
 
 
-def get_private_key_for_acc(public_key: HexStr) -> str:  # TODO get it from AWS
-    return settings.private_key
-
-
 class Executor:
-    def __init__(self, public_key, rnd, tx_repository: TxRepository) -> None:
+    def __init__(self, public_key, rnd, tx_repository: TxRepository, secret_manager: ...) -> None:
         self.public_key = public_key
-        self.private_key = get_private_key_for_acc(self.public_key)
+        self.private_key = self.get_private_key_for_acc(self.public_key)
         self.rnd = rnd
-        self.tx_repository = tx_repository
+        self._tx_repository = tx_repository
+        self._secret_manager = secret_manager
+
+    def get_private_key_for_acc(self, public_key: HexStr) -> str:  # TODO get it from AWS
+        return self._secret_manager.get_secret_value(SecretId=public_key)[public_key]
 
     def perform_activity(self) -> None:
         tx = self._calculate_next_transaction()
@@ -66,7 +66,7 @@ class Executor:
             to_token=tx.to_token,
             tx_date=datetime.now(),
         )
-        self.tx_repository.post_tx(tx_db)
+        self._tx_repository.post_tx(tx_db)
 
     def __repr__(self):
         return f"Account(public_key={self.public_key})"
