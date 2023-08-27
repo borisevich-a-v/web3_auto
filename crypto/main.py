@@ -1,25 +1,37 @@
+import logging
+import os
+
 import boto3
 from activities import Activities
 from configs import RandomConfig, settings
-from repositories.account import AccountRepository
-from repositories.transactions import TxRepository
+from infrastructure.repositories.account import AccountRepository
+from infrastructure.repositories.transactions import TxRepository
+from infrastructure.secret_manager_stub import SecretManagerStub
+from logger import configure_logging
 from runner import Runner
 
-aws_session = boto3.session.Session()
+configure_logging()
+logger = logging.getLogger()
 
+aws_session = boto3.session.Session()
 dynamodb = aws_session.resource(
     "dynamodb",
     region_name=settings.aws_region,
     aws_access_key_id=settings.aws_access_key,
     aws_secret_access_key=settings.aws_secret_key,
-    endpoint_url=settings.aws_endpoint_url,  # TODO setup for both envs
+    endpoint_url=settings.aws_endpoint_url,
 )
-secret_manager = aws_session.client(
-    "secretsmanager",
-    aws_access_key_id=settings.aws_access_key,
-    aws_secret_access_key=settings.aws_secret_key,
-    region_name=settings.aws_region,
-)
+
+if os.getenv("ENVIRONMENT") == "local":  # TODO
+    logger.info("Local for secret management")
+    secret_manager = SecretManagerStub(settings.local_public_key, settings.local_private_key)
+else:
+    secret_manager = aws_session.client(
+        "secretsmanager",
+        aws_access_key_id=settings.aws_access_key,
+        aws_secret_access_key=settings.aws_secret_key,
+        region_name=settings.aws_region,
+    )
 
 account_repository = AccountRepository(dynamodb)
 tx_repository = TxRepository(dynamodb)

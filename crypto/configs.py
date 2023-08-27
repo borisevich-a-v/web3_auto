@@ -1,5 +1,6 @@
 import random
 import time
+from typing import Optional
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
@@ -8,13 +9,13 @@ from utils.random_values import get_random_value_with_2_5_betavariate
 
 
 class Settings(BaseSettings):
-    private_key: str
-    public_key: str
+    local_public_key: Optional[str]
+    local_private_key: Optional[str]
 
-    aws_access_key: str
-    aws_secret_key: str
-    aws_region: str
-    aws_endpoint_url: str
+    aws_access_key: str = "admin"
+    aws_secret_key: str = "admin"
+    aws_region: str = "us-east"
+    aws_endpoint_url: str = "localhost:8000"
 
 
 class RandomConfig(BaseModel):
@@ -44,4 +45,4 @@ class RandomConfig(BaseModel):
         time.sleep(time_to_sleep)
 
 
-settings = Settings(_env_file=".env", _env_file_encoding="utf-8")
+settings = Settings(_env_file="../.env", _env_file_encoding="utf-8")

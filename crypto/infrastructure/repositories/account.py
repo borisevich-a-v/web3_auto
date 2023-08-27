@@ -20,11 +20,11 @@ class AccountRepository(IAccountRepository):
     def get_by_next_tx_date(self, next_tx_date: Optional[datetime] = None) -> List[AccountDB]:
         if not next_tx_date:
             next_tx_date = datetime.now()
+
         response = self.table.scan(
             Select="ALL_ATTRIBUTES",
             FilterExpression=Attr("next_tx_date").lte(next_tx_date.isoformat()),
         )
-        print(response["Items"])
         return [AccountDB.model_validate(acc) for acc in response["Items"]]
 
     def update_tx_date(self, public_key: HexStr, next_tx_date: datetime) -> AccountDB:
