@@ -1,27 +1,33 @@
+import logging
 import random
 import time
 import traceback
 from typing import Any
 
 from configs import RandomConfig
-from errors import NoPoolError, NotEnoughBalanceError
 from eth_abi import encode
 from eth_typing import HexStr
 from web3 import Web3
 from web3.types import SignedTx
 
 from crypto.chains import era
+from crypto.errors import NoPoolError, NotEnoughBalanceError
 from crypto.swaps import Swap
+
+logger = logging.getLogger()
 
 
 class SyncswapSwap(Swap):
     CLASSIC_POOL_FACTORY_ADDRESS = "0xf2DAd89f2788a8CD54625C60b55cD3d2D0ACa7Cb"
     ROUTER_ADDRESS = "0x2da10A1e27bF85cEdD8FFb1AbBe97e53391C0295"
 
+    DEX = "syncswap"
+
     def __init__(
         self, private_key: str, from_token: era.Tokens, to_token: era.Tokens, amount_to_swap: float, rnd: RandomConfig
     ) -> None:
         self.from_token = from_token
+
         self.from_token_adr = Web3.to_checksum_address(self.from_token.value)
         self.to_token = to_token
         self.to_token_adr = Web3.to_checksum_address(self.to_token.value)
@@ -96,7 +102,7 @@ class SyncswapSwap(Swap):
         tx = router.functions.swap(paths, 0, int(self.web3.eth.get_block("latest").timestamp) + 1200).build_transaction(
             {
                 "from": self.account.address,
-                "value": value if self.from_token.lower() == "eth" else 0,
+                "value": value if self.from_token.value.lower() == "eth" else 0,
                 "nonce": self.web3.eth.get_transaction_count(self.account.address),
                 "maxFeePerGas": 0,
                 "maxPriorityFeePerGas": 0,
@@ -122,11 +128,11 @@ class SyncswapSwap(Swap):
     def _get_paths(self, value: float) -> list[dict[str, Any]]:
         pool_address = self._get_pool_address()
         swap_data = encode(["address", "address", "uint8"], [self.from_token_adr, self.account.address, 1])
-        steps = [{"pool": pool_address, "data": swap_data, "callback": era.Tokens.NATIVE, "callbackData": "0x"}]
+        steps = [{"pool": pool_address, "data": swap_data, "callback": era.Tokens.NATIVE.value, "callbackData": "0x"}]
         paths = [
             {
                 "steps": steps,
-                "tokenIn": Web3.to_checksum_address(era.Tokens.NATIVE)
+                "tokenIn": Web3.to_checksum_address(era.Tokens.NATIVE.value)
                 if self.from_token is era.Tokens.ETH
                 else self.from_token_adr,
                 "amountIn": value,
