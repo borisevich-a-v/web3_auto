@@ -1,12 +1,13 @@
-FROM python:3.10-slim
+FROM python:3.11-slim-bookworm
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app/
-COPY ./requirements.txt ./requirements.txt
-RUN pip install -r ./requirements.txt
+WORKDIR app
 
-COPY crypto /app
-COPY .env /.env
+COPY app/ ./
+COPY crypto/ ./crypto
 
 CMD ["python", "main.py"]

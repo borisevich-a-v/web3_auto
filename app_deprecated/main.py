@@ -3,12 +3,13 @@ import os
 
 import boto3
 from activities import Activities
-from configs import RandomConfig, settings
 from infrastructure.repositories.account import AccountRepository
 from infrastructure.repositories.transactions import TxRepository
 from infrastructure.secret_manager_stub import SecretManagerStub
 from logger import configure_logging
 from runner import Runner
+
+from app.configs import RandomConfig, settings
 
 configure_logging()
 logger = logging.getLogger()

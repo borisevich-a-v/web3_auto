@@ -5,7 +5,7 @@ from eth_typing import HexStr
 from pydantic import BaseModel
 
 
-class Swap(ABC):
+class BaseSwap(ABC):
     DEX: str
 
     @abstractmethod
@@ -18,5 +18,5 @@ class Swap(ABC):
     def swap(self) -> HexStr:
         ...
 
-    def __str__(self):  # TODO make base class
+    def __str__(self):
         return f"I'm a swap for {self.DEX}."

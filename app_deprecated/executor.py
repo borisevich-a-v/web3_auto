@@ -1,8 +1,7 @@
 import logging
 from datetime import datetime
 
-from activities import app_to_activities_map
-from applications import Applications
+from activities import Activities
 from eth_typing import HexStr
 from infrastructure.repositories.transactions import TxRepository
 from models import Tx, TxDB
@@ -44,7 +43,7 @@ class Executor:
         token_from, token_to = self._get_swap_pair()
         tx = Tx(
             chain=era.chain.name,
-            application=Applications.SYNCSWAP,
+            application=Activities.SYNCSWAP,
             from_token=token_from,
             to_token=token_to,
             amount=self._get_amount(token_from),

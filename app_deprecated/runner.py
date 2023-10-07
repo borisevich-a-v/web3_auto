@@ -3,14 +3,14 @@ import logging
 from typing import List
 
 from activities import Activities
-from configs import RandomConfig
 from eth_typing import HexStr
 from executor import Executor
 from infrastructure.repositories.transactions import ITxRepository
 from interfaces import IAccountRepository
 from models import AccountDB
-
 from utils.random_values import get_random_datetime_in_future
+
+from app.configs import RandomConfig
 
 logger = logging.getLogger()
 
